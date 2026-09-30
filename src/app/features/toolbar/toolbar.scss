@@ -1,0 +1,47 @@
+.toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 8px 16px;
+  background: var(--panel);
+  border-bottom: 1px solid var(--border);
+}
+
+.chips { display: flex; flex-wrap: wrap; gap: 6px; }
+
+.chip {
+  --c: var(--muted);
+  padding: 3px 10px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--c);
+  border-color: var(--c);
+  border-radius: 999px;
+  .n { color: var(--text); font-weight: 400; margin-left: 4px; }
+  &.off { opacity: 0.35; text-decoration: line-through; }
+}
+
+$levels: trace, debug, info, warn, error, fatal, other, raw;
+@each $l in $levels {
+  .chip.lvl-#{$l} { --c: var(--lvl-#{$l}); }
+}
+
+.search {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+
+  input[type='search'] {
+    width: 320px;
+    padding: 6px 10px;
+    background: var(--bg);
+    color: var(--text);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    &:focus { outline: none; border-color: var(--accent); }
+  }
+  .matches { color: var(--muted); font-size: 13px; min-width: 56px; text-align: center; }
+  .only { font-size: 13px; color: var(--muted); display: flex; align-items: center; gap: 4px; cursor: pointer; }
+}

@@ -1,0 +1,72 @@
+<div class="splitter" title="Drag to resize"
+     (pointerdown)="startDrag($event)"
+     (pointermove)="onDrag($event)"
+     (pointerup)="endDrag()"
+     (pointercancel)="endDrag()"></div>
+
+@if (entry(); as e) {
+<div class="header">
+  <span [class]="'badge lvl-' + e.level.toLowerCase()">{{ e.kind === 'json' ? e.level : 'NON-JSON' }}</span>
+  @if (e.timestamp !== undefined) {
+  <span class="ts">{{ e.timestamp | date: 'yyyy-MM-dd HH:mm:ss.SSS' }}</span>
+  }
+  <span class="muted">line {{ e.lineNumber }}</span>
+  <span class="spacer"></span>
+
+  @if (e.kind === 'json') {
+  <div class="tabs">
+    <button [class.active]="tab() === 'formatted'" (click)="tab.set('formatted')">Formatted</button>
+    <button [class.active]="tab() === 'raw'" (click)="tab.set('raw')">Raw JSON</button>
+  </div>
+  }
+  <button (click)="copy(e.raw)" title="Copy the original log line">Copy line</button>
+  <button (click)="close()" title="Close">✕</button>
+</div>
+
+<div class="body">
+  @if (tab() === 'formatted' || e.kind === 'text') {
+  @if (callerText()) {
+  <section>
+    <h3>Caller</h3>
+    <div class="mono">@for (s of seg(callerText()); track $index) {<span [class.hit]="s.match">{{ s.text }}</span>}</div>
+  </section>
+  }
+
+  <section>
+    <h3>Message</h3>
+    <pre class="mono">@for (s of seg(message() || e.raw); track $index) {<span [class.hit]="s.match">{{ s.text }}</span>}</pre>
+  </section>
+
+  @if (stackLines().length) {
+  <section>
+    <h3>Stack trace <button class="small" (click)="copy(e.stackTrace ?? '')">Copy</button></h3>
+    <div class="stack mono">
+      @for (line of stackLines(); track $index) {
+      <div [class]="'sl sl-' + line.kind">@for (s of seg(line.text); track $index) {<span [class.hit]="s.match">{{ s.text }}</span>}</div>
+      }
+    </div>
+  </section>
+  }
+
+  @if (extraFields().length) {
+  <section>
+    <h3>Other fields</h3>
+    <table>
+      @for (f of extraFields(); track f.key) {
+      <tr>
+        <td class="k">{{ f.key }}</td>
+        <td class="mono"><pre>{{ f.value }}</pre></td>
+      </tr>
+      }
+    </table>
+  </section>
+  }
+  } @else {
+  <label class="pretty">
+    <input type="checkbox" [checked]="prettyRaw()" (change)="prettyRaw.set($any($event.target).checked)" />
+    Pretty print
+  </label>
+  <pre class="mono">@for (s of seg(rawText()); track $index) {<span [class.hit]="s.match">{{ s.text }}</span>}</pre>
+  }
+</div>
+}

@@ -1,1 +1,44 @@
-/* You can add global styles to this file, and also import other style files */
+:root {
+  --bg: #0f1115;
+  --panel: #171a21;
+  --border: #262b36;
+  --text: #d7dae0;
+  --muted: #7d8494;
+  --accent: #4f8cff;
+
+  --lvl-trace: #6b7280;
+  --lvl-debug: #8b9dc3;
+  --lvl-info: #5cc8a0;
+  --lvl-warn: #f0b429;
+  --lvl-error: #ff5c5c;
+  --lvl-fatal: #e066ff;
+  --lvl-other: #9ca3af;
+  --lvl-raw: #6b7280;
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+  height: 100%;
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: system-ui, -apple-system, 'Segoe UI', sans-serif;
+}
+
+button {
+  background: var(--panel);
+  color: var(--text);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 6px 12px;
+  cursor: pointer;
+  &:disabled { opacity: 0.5; cursor: default; }
+  &:hover:not(:disabled) { border-color: var(--accent); }
+}
+
+.hit {
+  background: rgba(255, 214, 10, 0.35);
+  color: #fff;
+  border-radius: 2px;
+}

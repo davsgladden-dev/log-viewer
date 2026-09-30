@@ -1,0 +1,30 @@
+<div class="toolbar">
+  <div class="chips">
+    @for (level of levels(); track level) {
+    <button [class]="'chip lvl-' + level.toLowerCase()"
+            [class.off]="!store.enabledLevels().has(level)"
+            (click)="store.toggleLevel(level)">
+      {{ label(level) }} <span class="n">{{ store.levelCounts().get(level) }}</span>
+    </button>
+    }
+  </div>
+
+  <div class="search">
+    <input #q type="search" placeholder="Search all fields…" spellcheck="false"
+           (input)="onSearchInput(q.value)"
+           (keydown.enter)="store.nextMatch()"
+           (keydown.shift.enter)="store.prevMatch()" />
+
+    @if (store.query()) {
+    <span class="matches">{{ store.activeMatch() + 1 }} / {{ matchCount() }}</span>
+    <button (click)="store.prevMatch()" [disabled]="!matchCount()" title="Previous (Shift+Enter)">▲</button>
+    <button (click)="store.nextMatch()" [disabled]="!matchCount()" title="Next (Enter)">▼</button>
+    }
+
+    <label class="only">
+      <input type="checkbox" [checked]="store.matchesOnly()"
+             (change)="store.matchesOnly.set($any($event.target).checked)" />
+      Only matches
+    </label>
+  </div>
+</div>

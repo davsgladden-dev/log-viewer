@@ -1,0 +1,16 @@
+<section class="input" [class.drag]="dragOver()" (dragover)="onDragOver($event)"
+         (dragleave)="dragOver.set(false)" (drop)="onDrop($event)">
+  <textarea
+    [value]="pasteText()"
+    (input)="pasteText.set($any($event.target).value)"
+    placeholder="Paste Kubernetes log lines here, or drop a log file anywhere in this box..."
+    spellcheck="false"></textarea>
+
+  <div class="actions">
+    <button (click)="loadPasted()" [disabled]="!pasteText().trim()">Load pasted text</button>
+    <label class="file-btn">
+      Choose file
+      <input type="file" hidden accept=".log,.txt,.json,.ndjson,text/plain" (change)="onFileChange($event)" />
+    </label>
+  </div>
+</section>

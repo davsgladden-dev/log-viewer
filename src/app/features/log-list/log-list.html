@@ -1,0 +1,30 @@
+<div class="table" [style]="cssVars()">
+  <div class="head">
+    @for (c of columns; track c.key) {
+    <div [class]="'h c-' + c.key">
+      {{ c.label }}
+      <span class="grip"
+            title="Drag to resize · double-click to reset"
+            (pointerdown)="startResize($event, c.key)"
+            (pointermove)="onResize($event)"
+            (pointerup)="endResize()"
+            (pointercancel)="endResize()"
+            (dblclick)="layout.resetColumnWidth(c.key)"></span>
+    </div>
+    }
+    <div class="h c-msg">Message</div>
+  </div>
+
+  <cdk-virtual-scroll-viewport class="viewport" [itemSize]="rowHeight">
+    <div *cdkVirtualFor="let entry of store.visible(); trackBy: trackById"
+         [class]="'row lvl-' + entry.level.toLowerCase()"
+         [class.selected]="entry.id === store.selectedId()"
+         (click)="store.selectedId.set(entry.id)">
+      <span class="ln">{{ entry.lineNumber }}</span>
+      <span class="ts">{{ entry.timestamp !== undefined ? (entry.timestamp | date: 'HH:mm:ss.SSS') : '' }}</span>
+      <span class="lvl">{{ entry.level }}</span>
+      <span class="caller">{{ callerLabel(entry) }}</span>
+      <span class="msg">@for (s of seg(entry.message || entry.raw); track $index) {<span [class.hit]="s.match">{{ s.text }}</span>}</span>
+    </div>
+  </cdk-virtual-scroll-viewport>
+</div>

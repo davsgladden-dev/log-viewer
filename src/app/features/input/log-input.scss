@@ -1,0 +1,35 @@
+:host { display: flex; flex: 1; min-height: 0; padding: 16px; }
+
+.input {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 12px;
+  border: 2px dashed var(--border);
+  border-radius: 10px;
+  &.drag { border-color: var(--accent); }
+}
+
+textarea {
+  flex: 1;
+  resize: none;
+  background: var(--panel);
+  color: var(--text);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 12px;
+  font-family: Consolas, 'Courier New', monospace;
+  font-size: 13px;
+}
+
+.actions { display: flex; gap: 12px; align-items: center; }
+
+.file-btn {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 6px 12px;
+  cursor: pointer;
+  &:hover { border-color: var(--accent); }
+}
