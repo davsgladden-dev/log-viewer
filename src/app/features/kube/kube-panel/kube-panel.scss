@@ -1,0 +1,80 @@
+:host {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  flex: 1;
+  --k-bg: var(--panel-bg, #1e1f22);
+  --k-border: var(--border-color, #3a3d41);
+  --k-text: var(--text-color, #d4d4d4);
+  --k-muted: var(--text-muted, #8b9098);
+  --k-accent: var(--accent-color, #4ea1ff);
+  --k-bad: #f26d6d;
+  --k-ok: #5fd08a;
+  --k-warn: #e5c07b;
+  color: var(--k-text);
+  font-size: 13px;
+}
+
+.kube {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  flex: 1;
+  padding: 12px 16px;
+  gap: 8px;
+}
+
+.kube__bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: 12px;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+
+  &__label { font-size: 11px; color: var(--k-muted); text-transform: uppercase; letter-spacing: .04em; }
+
+  select, input {
+    min-width: 180px;
+    height: 28px;
+    padding: 0 8px;
+    background: var(--k-bg);
+    color: var(--k-text);
+    border: 1px solid var(--k-border);
+    border-radius: 4px;
+    font: inherit;
+  }
+}
+
+.btn {
+  height: 28px;
+  padding: 0 12px;
+  background: transparent;
+  color: var(--k-text);
+  border: 1px solid var(--k-border);
+  border-radius: 4px;
+  cursor: pointer;
+  &:hover:not(:disabled) { border-color: var(--k-accent); }
+  &:disabled { opacity: .5; cursor: default; }
+}
+
+.kube__status { display: flex; align-items: center; gap: 6px; height: 28px; color: var(--k-muted); margin-left: auto; }
+.dot { width: 8px; height: 8px; border-radius: 50%; display: inline-block;
+  &--ok { background: var(--k-ok); } &--bad { background: var(--k-bad); } &--pending { background: var(--k-warn); } }
+
+.kube__server { color: var(--k-muted); font-size: 12px; font-family: monospace; }
+.kube__error { padding: 6px 10px; border: 1px solid var(--k-bad); color: var(--k-bad); border-radius: 4px; white-space: pre-wrap; }
+.kube__hint { color: var(--k-warn); font-size: 12px; }
+
+.kube__tabs { display: flex; gap: 4px; border-bottom: 1px solid var(--k-border); }
+.tab {
+  padding: 6px 14px; background: transparent; color: var(--k-muted);
+  border: 0; border-bottom: 2px solid transparent; cursor: pointer; font: inherit;
+  &--active { color: var(--k-text); border-bottom-color: var(--k-accent); }
+}
+
+.kube__body { display: flex; flex-direction: column; min-height: 0; flex: 1; }

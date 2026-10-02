@@ -24,3 +24,13 @@ main {
   display: flex;
   flex-direction: column;
 }
+
+.source-toggle {
+  display: flex; gap: 4px; padding: 8px 16px 0;
+  button {
+    padding: 4px 12px; background: transparent; cursor: pointer;
+    color: var(--text-muted, #8b9098);
+    border: 1px solid var(--border-color, #3a3d41); border-radius: 4px;
+    &.active { color: var(--text-color, #d4d4d4); border-color: var(--accent-color, #4ea1ff); }
+  }
+}

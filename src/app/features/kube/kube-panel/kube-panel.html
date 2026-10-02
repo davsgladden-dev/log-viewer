@@ -1,0 +1,87 @@
+<section class="kube">
+  <div class="kube__bar">
+    <label class="field">
+      <span class="field__label">Config</span>
+      <select [disabled]="store.connecting()" (change)="onConfigChange($event)">
+        @if (!store.selectedFile()) {
+        <option value="" selected>Select config…</option>
+        }
+        @for (c of store.configs(); track c.name) {
+        <option [value]="c.name" [selected]="c.name === store.selectedFile()" [disabled]="!!c.error">
+          {{ c.name }}{{ c.error ? ' (unreadable)' : '' }}
+        </option>
+        }
+      </select>
+    </label>
+
+    @if (store.contexts().length > 1) {
+    <label class="field">
+      <span class="field__label">Context</span>
+      <select [disabled]="store.connecting()" (change)="onContextChange($event)">
+        @for (ctx of store.contexts(); track ctx.name) {
+        <option [value]="ctx.name" [selected]="ctx.name === store.active()?.context">{{ ctx.name }}</option>
+        }
+      </select>
+    </label>
+    }
+
+    <label class="field">
+      <span class="field__label">Namespace</span>
+      <input
+        type="text"
+        list="kube-namespaces"
+        spellcheck="false"
+        autocomplete="off"
+        [value]="store.namespace()"
+        [disabled]="!store.active()"
+        (change)="onNamespaceChange($event)"
+      />
+      <datalist id="kube-namespaces">
+        @for (ns of store.namespaces(); track ns) {
+        <option [value]="ns"></option>
+        }
+      </datalist>
+    </label>
+
+    <div class="kube__status">
+      @if (store.connecting()) {
+      <span class="dot dot--pending"></span> Connecting…
+      } @else if (store.reachable()) {
+      <span class="dot dot--ok"></span>
+      {{ store.active()?.context }} · {{ store.serverVersion() }}
+      } @else {
+      <span class="dot dot--bad"></span> Not connected
+      }
+    </div>
+
+    <button type="button" class="btn" [disabled]="store.connecting()" (click)="store.connect()">
+      Reconnect
+    </button>
+  </div>
+
+  @if (store.active(); as active) {
+  <div class="kube__server" [title]="active.directory">{{ active.server }}</div>
+  }
+
+  @if (store.connectionError(); as err) {
+  <div class="kube__error" role="alert">{{ err }}</div>
+  }
+  @if (store.namespaceListRestricted() && store.reachable()) {
+  <div class="kube__hint">Namespace listing is not permitted for this user. Type the namespace name.</div>
+  }
+
+  <div class="kube__tabs" role="tablist">
+    <button type="button" role="tab" class="tab" [class.tab--active]="store.tab() === 'pods'"
+            (click)="store.setTab('pods')">Pods &amp; Logs</button>
+    <button type="button" role="tab" class="tab" [class.tab--active]="store.tab() === 'secrets'"
+            (click)="store.setTab('secrets')">Secrets</button>
+  </div>
+
+  <div class="kube__body">
+    @if (store.tab() === 'pods') {
+    <app-kube-pods />
+    } @else {
+    <app-kube-secrets />
+    }
+  </div>
+</section>

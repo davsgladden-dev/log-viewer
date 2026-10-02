@@ -1,0 +1,82 @@
+<div class="pods__toolbar">
+  <input type="search" placeholder="Filter pods…" spellcheck="false"
+         [value]="store.podFilter()" (input)="onFilter($event)" />
+  <button type="button" class="btn" [disabled]="store.podsLoading() || !store.active()" (click)="store.loadPods()">
+    {{ store.podsLoading() ? 'Loading…' : 'Refresh' }}
+  </button>
+  <span class="muted">{{ store.filteredPods().length }} / {{ store.pods().length }} pods</span>
+</div>
+
+@if (store.podsError(); as err) {
+<div class="error" role="alert">{{ err }}</div>
+}
+
+<div class="pods__table">
+  <table>
+    <thead>
+    <tr><th>Name</th><th>Ready</th><th>Status</th><th>Restarts</th><th>Age</th></tr>
+    </thead>
+    <tbody>
+    @for (pod of store.filteredPods(); track pod.name) {
+    <tr [class.selected]="pod.name === store.selectedPodName()"
+        (click)="store.selectPod(pod.name)"
+        (dblclick)="loadLogsFor(pod.name)">
+      <td class="mono">{{ pod.name }}</td>
+      <td>{{ pod.ready }}</td>
+      <td><span [class]="statusClass(pod.status)">{{ pod.status }}</span></td>
+      <td>{{ pod.restarts }}</td>
+      <td>{{ pod.age }}</td>
+    </tr>
+    } @empty {
+    <tr><td colspan="5" class="muted empty">
+      {{ store.podsLoading() ? 'Loading pods…' : 'No pods to show.' }}
+    </td></tr>
+    }
+    </tbody>
+  </table>
+</div>
+
+<div class="pods__logbar">
+  @if (store.selectedPod(); as pod) {
+  <span class="mono pods__sel" [title]="pod.name">{{ pod.name }}</span>
+
+  @if (pod.containers.length > 1) {
+  <label>
+    Container
+    <select (change)="onContainer($event)">
+      <option value="" [selected]="store.container() === ''">(default)</option>
+      @for (c of pod.containers; track c.name) {
+      <option [value]="c.name" [selected]="c.name === store.container()">
+        {{ c.name }}{{ c.initContainer ? ' (init)' : '' }}
+      </option>
+      }
+    </select>
+  </label>
+  }
+
+  <label>
+    Tail
+    <input type="number" min="0" step="100" class="tail"
+           [value]="store.tailLines()" (change)="onTail($event)"
+           title="Number of lines from the end. 0 = all lines." />
+  </label>
+  @for (n of presets; track n) {
+  <button type="button" class="chip" [class.chip--active]="store.tailLines() === n"
+          (click)="store.setTailLines(n)">{{ n }}</button>
+  }
+
+  <label class="check" title="Logs from the previous (crashed/restarted) container instance">
+    <input type="checkbox" [checked]="store.previous()" (change)="onPrevious($event)" /> Previous
+  </label>
+
+  <button type="button" class="btn btn--primary" [disabled]="store.logsLoading()" (click)="store.fetchLogs()">
+    {{ store.logsLoading() ? 'Loading…' : 'Load logs' }}
+  </button>
+  } @else {
+  <span class="muted">Select a pod to load its logs (double-click loads immediately).</span>
+  }
+</div>
+
+@if (store.logsError(); as err) {
+<div class="error" role="alert">{{ err }}</div>
+}
